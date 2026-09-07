@@ -1,0 +1,267 @@
+/**
+
+ * powermenu.rasi
+
+ * Menú de apagado — archivo único, sin imágenes externas.
+
+ * Uso sugerido:
+
+ *   rofi -show p -modi "p:~/.config/bin/powermenu-options.sh" -theme ~/.config/rofi/powermenu.rasi
+
+ * (o llamalo con -dmenu, ver nota al final del chat)
+
+ */
+
+
+
+* {
+
+    bg:        #FFFFFF;
+
+    bg-soft:   #F7EEF1;
+
+    bg-alt:    #EFD9E0;
+
+    fg:        #1B1420;
+
+    muted:     #8C7480;
+
+    accent:    #E85D75;
+
+    accent2:   #FF8FA3;
+
+    danger:    #D64550;
+
+
+
+    background-color: transparent;
+
+    text-color:        @fg;
+
+}
+
+
+
+configuration {
+
+    show-icons:       false;
+
+    hover-select:     true;
+
+    me-select-entry:  "MousePrimary";
+
+    me-accept-entry:  "MouseSecondary|MousePrimary";
+
+}
+
+
+
+window {
+
+    background-color: @bg;
+
+    transparency:      "real";
+
+    width:              540px;
+
+    padding:            40px 36px 36px 36px;
+
+    border-radius:      28px;
+
+    location:           center;
+
+    anchor:             center;
+
+    border:             1px;
+
+    border-color:       @bg-alt;
+
+}
+
+
+
+mainbox {
+
+    children:          [ inputbar, message, listview ];
+
+    spacing:            22px;
+
+    background-color:   transparent;
+
+}
+
+
+
+/* barra superior: solo un prompt decorativo, sin texto editable */
+
+inputbar {
+
+    children:           [ prompt ];
+
+    background-color:   transparent;
+
+    padding:            0px 4px;
+
+}
+
+
+
+prompt {
+
+    enabled:            true;
+
+    str:                "¿Qué querés hacer?";
+
+    font:               "JetBrainsMono Nerd Font Bold 15";
+
+    text-color:         @fg;
+
+    horizontal-align:   0.5;
+
+    expand:             true;
+
+}
+
+
+
+/* píldora con info de sesión / uptime */
+
+message {
+
+    border-radius:      16px;
+
+    background-color:   @bg-soft;
+
+    padding:            10px 20px;
+
+    horizontal-align:   0.5;
+
+}
+
+
+
+textbox {
+
+    text-color:         @muted;
+
+    font:               "JetBrainsMono Nerd Font 10";
+
+    horizontal-align:   0.5;
+
+}
+
+
+
+listview {
+
+    columns:            5;
+
+    lines:              1;
+
+    spacing:            14px;
+
+    fixed-height:       true;
+
+    dynamic:            false;
+
+    cycle:              true;
+
+    background-color:   transparent;
+
+}
+
+
+
+element {
+
+    orientation:        vertical;
+
+    border-radius:      18px;
+
+    background-color:   @bg-soft;
+
+    text-color:         @fg;
+
+    vertical-align:     0.5;
+
+    horizontal-align:   0.5;
+
+    padding:            18px 6px;
+
+}
+
+
+
+/* el glifo (ícono Nerd Font) y la etiqueta viajan juntos dentro del
+
+   mismo string, separados por un salto de línea, ej:
+
+   "\n\nApagar" — así no depende de show-icons ni de imágenes */
+
+element-text {
+
+    horizontal-align:   0.5;
+
+    vertical-align:     0.5;
+
+    font:               "JetBrainsMono Nerd Font 22";
+
+    background-color:   inherit;
+
+    text-color:         inherit;
+
+}
+
+
+
+element normal.normal {
+
+    background-color:   @bg-soft;
+
+    text-color:         @fg;
+
+}
+
+
+
+/* fila marcada con `-a` (activa / recomendada, ej. "Apagar") */
+
+element normal.active,
+
+element selected.active {
+
+    background-color:   @accent;
+
+    text-color:         @bg;
+
+}
+
+
+
+/* fila marcada con `-u` (destructiva / requiere confirmación) */
+
+element normal.urgent,
+
+element selected.urgent {
+
+    background-color:   @danger;
+
+    text-color:         @bg;
+
+}
+
+
+
+element selected.normal {
+
+    background-color:   @bg-soft;
+
+    text-color:         @fg;
+
+    border:             2px;
+
+    border-color:       @accent;
+
+}
+
+

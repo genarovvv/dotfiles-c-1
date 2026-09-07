@@ -1,0 +1,55 @@
+#! /bin/bash
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc monitor -d I II III IV V VI VII
+bspc config border_width         2
+bspc config window_gap          12
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+
+# ---------------------------------------------------------------------
+# THEME (pink / celeste / purple) — set by
+# ~/.config/polybar/scripts/thememenu -> ~/.config/bin/set-theme.sh
+# ---------------------------------------------------------------------
+THEME_STATE="$HOME/.config/theme/current.sh"
+if [[ -f "$THEME_STATE" ]]; then
+    source "$THEME_STATE"
+else
+    # first run / nothing chosen yet -> fall back to pink and generate
+    # the state files so everything else (rofi, polybar) has something
+    # to read too
+    "$HOME/.config/bin/set-theme.sh" pink
+    source "$THEME_STATE"
+fi
+
+# WALLPAPER — themed folder instead of one flat directory
+WALLPAPER_DIR="$HOME/.config/wallpapers/${THEME_NAME}"
+if [[ -d "$WALLPAPER_DIR" ]]; then
+    mapfile -t WALLPAPERS < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \))
+    if [[ ${#WALLPAPERS[@]} -gt 0 ]]; then
+        feh --bg-fill "${WALLPAPERS[$((RANDOM % ${#WALLPAPERS[@]}))]}"
+    fi
+fi
+
+# POLYBAR
+sleep 1 && ~/.config/polybar/launch.sh &
+
+# CUSTOM
+bspc config focus_follows_pointer true
+
+# BORDES — color viene del tema activo, ya no hardcodeado
+bspc config border_width         2
+bspc config active_border_color  "$THEME_ACCENT"
+bspc config normal_border_color  "#3D3D3D"
+bspc config focused_border_color "$THEME_ACCENT"
+
+# PICOM
+picom --daemon
+xsetroot -cursor_name left_ptr &

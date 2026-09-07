@@ -1,0 +1,6 @@
+* {
+    bg:       #FFFFFF;
+    fg:       #808080;
+    button:   #c3b1e1;
+    accent:   #C3B1E1;
+}

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# ~/.config/polybar/scripts/powermenu_alt
+# Row-of-squares power menu (lock / sleep / logout / restart / poweroff),
+# styled to match rofi/powermenu.rasi + rofi/colors.rasi (current theme).
+
+ROFI_THEME="$HOME/.config/rofi/powermenu.rasi"
+
+uptime_txt=$(uptime -p | sed 's/^up //')
+
+lock=""
+sleep=""
+logout=""
+restart=""
+poweroff=""
+
+# Order matters: index 0..4 -> lock, sleep, logout, restart, poweroff
+options="$lock\n$sleep\n$logout\n$restart\n$poweroff"
+
+chosen=$(echo -e "$options" | rofi -dmenu \
+    -p "" \
+    -mesg "Uptime: ${uptime_txt}" \
+    -theme "$ROFI_THEME" \
+    -selected-row 0)
+
+case "$chosen" in
+    "$lock")
+        # swap for your locker of choice (i3lock-color, betterlockscreen...)
+        betterlockscreen -l 2>/dev/null || i3lock -c 170812
+        ;;
+    "$sleep")
+        systemctl suspend
+        ;;
+    "$logout")
+        bspc quit
+        ;;
+    "$restart")
+        systemctl reboot
+        ;;
+    "$poweroff")
+        systemctl poweroff
+        ;;
+    *)
+        exit 0
+        ;;
+esac

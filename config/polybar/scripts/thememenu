@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# ~/.config/polybar/scripts/thememenu
+# Row-of-squares theme picker (Rosa / Celeste / Morado), same visual
+# language as powermenu_alt. Selecting one calls set-theme.sh, which is
+# the single source of truth for colors, wallpaper and rofi/polybar reload.
+
+ROFI_THEME="$HOME/.config/rofi/thememenu.rasi"
+SET_THEME="$HOME/.config/bin/set-theme.sh"
+
+current=$(cat "$HOME/.config/theme/current" 2>/dev/null || echo "pink")
+
+# icon glyphs are identical (a filled circle) — color comes from the
+# element normal.active / normal.urgent rules in colors.rasi, driven by
+# the -a / -u row flags below, so this looks like colored swatches
+rosa="󰝤  Rosa"
+celeste="󰝤  Celeste"
+morado="󰝤  Morado"
+
+options="$rosa\n$celeste\n$morado"
+
+chosen=$(echo -e "$options" | rofi -dmenu \
+    -p "" \
+    -mesg "Tema actual: ${current}" \
+    -theme "$ROFI_THEME" \
+    -a 0 \
+    -u 1)
+
+case "$chosen" in
+    "$rosa")    "$SET_THEME" pink ;;
+    "$celeste") "$SET_THEME" celeste ;;
+    "$morado")  "$SET_THEME" purple ;;
+    *) exit 0 ;;
+esac

@@ -1,0 +1,209 @@
+#!/bin/sh
+
+# ╭──────────────────────────────────────────────╮
+# │        Escritorios y movimiento de ventanas  │
+# ╰──────────────────────────────────────────────╯
+
+# Cambiar a escritorio 1–7
+super + {1-7}
+    bspc desktop -f ^{1-7}
+
+# Mover ventana al escritorio 1–7
+super + shift + {1-7}
+    bspc node -d ^{1-7}
+
+# ╭──────────────────────────────────────────────╮
+# │                Aplicaciones                  │
+# ╰──────────────────────────────────────────────╯
+
+# Terminal
+super + Return
+    kitty
+
+# Rofi
+super + d
+    rofi -show drun -theme $HOME/.config/rofi/config.rasi
+
+# ╭──────────────────────────────────────────────╮
+# │                 Capturas                     │
+# ╰──────────────────────────────────────────────╯
+
+# Captura completa
+super + s
+    flameshot full
+
+# Captura con selector
+super + shift + s
+    flameshot gui
+
+# ╭──────────────────────────────────────────────╮
+# │       Apagar, reiniciar, cerrar sesión       │
+# ╰──────────────────────────────────────────────╯
+
+ctrl + super + alt + p
+    systemctl poweroff
+
+ctrl + super + alt + r
+    systemctl reboot
+
+ctrl + super + alt + q
+    bspc quit
+
+ctrl + super + alt + l
+    betterlockscreen -l
+
+ctrl + super + alt + k
+    xkill
+
+# ╭──────────────────────────────────────────────╮
+# │      Control de brillo y volumen             │
+# ╰──────────────────────────────────────────────╯
+
+XF86MonBrightnessUp
+    brightnessctl set +5%
+
+XF86MonBrightnessDown
+    brightnessctl set 5%-
+
+XF86AudioRaiseVolume
+    pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+XF86AudioLowerVolume
+    pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+XF86AudioMute
+    pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+XF86AudioMicMute
+    pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+# ╭──────────────────────────────────────────────╮
+# │                 BSPWM Core                   │
+# ╰──────────────────────────────────────────────╯
+
+# Recargar sxhkd
+super + Escape
+    pkill -USR1 -x sxhkd
+
+# Recargar BSPWM
+super + alt + r
+    bspc wm -r
+
+# Cerrar ventana
+super + x
+    bspc node -c
+
+# Matar ventana
+super + shift + x
+    bspc node -k
+
+# Cerrar todas las ventanas del desktop actual
+super + ctrl + x
+    bspc query -N -d | xargs -I id -n 1 bspc node id -c
+
+# ╭──────────────────────────────────────────────╮
+# │        Navegación entre escritorios          │
+# ╰──────────────────────────────────────────────╯
+
+super + Left
+    bspc desktop -f prev
+
+super + Right
+    bspc desktop -f next
+
+# ╭──────────────────────────────────────────────╮
+# │        Navegación entre ventanas             │
+# ╰──────────────────────────────────────────────╯
+
+# Foco con hjkl
+super + {h,j,k,l}
+    bspc node -f {west,south,north,east}
+
+# Mover ventana con hjkl
+super + shift + {h,j,k,l}
+    bspc node -s {west,south,north,east}
+
+# Rotar árbol 90/-90
+ctrl + Tab
+    bspc node @/ -R {90,-90}
+
+# Rotar árbol fijo 90
+super + ctrl + r
+    bspc node @/ -R 90
+
+# ╭──────────────────────────────────────────────╮
+# │         Layout / Estado de ventanas          │
+# ╰──────────────────────────────────────────────╯
+
+# Tiled / Floating / Fullscreen
+super + {t,m}
+    bspc node -t {tiled,fullscreen}
+
+# Floating
+super + shift + f
+    bspc node -t floating
+
+# Toggle monocle / fullscreen (super + f)
+super + f
+    bspc desktop -l next
+
+# ╭──────────────────────────────────────────────╮
+# │     Resize dinámico (sin bug de bloqueo)     │
+# ╰──────────────────────────────────────────────╯
+
+alt + Left
+    bspc node -z right -20 0 || bspc node -z left -20 0
+
+alt + Right
+    bspc node -z right 20 0 || bspc node -z left 20 0
+
+alt + Up
+    bspc node -z bottom 0 -20 || bspc node -z top 0 -20
+
+alt + Down
+    bspc node -z bottom 0 20 || bspc node -z top 0 20
+
+# ╭──────────────────────────────────────────────╮
+# │         Preselect split (sin bloqueo)        │
+# ╰──────────────────────────────────────────────╯
+
+# Preseleccionar dirección y cancelar
+super + ctrl + {h,v,q}
+    bspc node -p {east,south,cancel}
+
+# Cambiar ratio del split
+super + ctrl + {comma,period}
+    bspc node @parent -r {-0.1,+0.1}
+
+# ╭──────────────────────────────────────────────╮
+# │        Mover ventana flotante                │
+# ╰──────────────────────────────────────────────╯
+
+super + shift + {Left,Down,Up,Right}
+    bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# ╭──────────────────────────────────────────────╮
+# │           Media (playerctl)                  │
+# ╰──────────────────────────────────────────────╯
+
+XF86AudioPlay
+    playerctl play-pause
+
+XF86AudioNext
+    playerctl next
+
+XF86AudioPrev
+    playerctl previous
+
+XF86AudioStop
+    playerctl stop
+
+# ╭──────────────────────────────────────────────╮
+# │           Wifi / Bluetooth                   │
+# ╰──────────────────────────────────────────────╯
+
+XF86WLAN
+    rfkill toggle wifi
+
+XF86Bluetooth
+    rfkill toggle bluetooth
